@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#10172a">
+<title>QueueLess — Skip the wait</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+:root{--ink:#172033;--muted:#738096;--navy:#10172a;--blue:#5b6cff;--violet:#8b5cf6;--cyan:#20c7d9;--mint:#28c7a5;--orange:#ff9f5a;--pink:#f16ca7;--bg:#f4f6fc;--line:#e8eaf2;--white:#fff;--shadow:0 18px 50px rgba(35,44,83,.09)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--ink)}button,input,select{font:inherit}button{border:0;cursor:pointer;font-weight:700;transition:.2s}button:hover{transform:translateY(-2px);filter:brightness(1.04)}button:active{transform:translateY(0)}.topbar{height:76px;background:rgba(16,23,42,.97);color:white;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,5vw,76px);position:sticky;top:0;z-index:10;box-shadow:0 8px 30px #11172a20}.brand{display:flex;align-items:center;gap:12px;font:700 22px 'Space Grotesk';letter-spacing:-.8px}.brand-mark{height:42px;width:42px;border-radius:14px;background:linear-gradient(135deg,var(--cyan),var(--blue) 55%,var(--violet));display:grid;place-items:center;font-size:22px;box-shadow:0 7px 20px #5b6cff55}.brand small{display:block;color:#9eacc4;font:600 9px 'DM Sans';letter-spacing:2px;margin-top:2px}.top-right{display:flex;align-items:center;gap:12px}.top-right label{font-size:12px;color:#aeb9cc}.role-select{background:#222d46;color:white;border:1px solid #3a4762;padding:10px 13px;border-radius:12px;outline:0}.shell{max-width:1220px;margin:auto;padding:35px 24px 65px}.hero{position:relative;overflow:hidden;border-radius:28px;padding:36px 38px;background:linear-gradient(115deg,#18284a 0%,#343b86 55%,#6755c9 100%);color:white;box-shadow:0 20px 55px #343b8630;margin-bottom:25px;min-height:190px}.hero:before,.hero:after{content:"";position:absolute;border-radius:50%;border:1px solid #ffffff24;pointer-events:none}.hero:before{width:330px;height:330px;right:8%;top:-190px;box-shadow:0 0 0 35px #ffffff08,0 0 0 70px #ffffff06}.hero:after{width:190px;height:190px;right:-45px;bottom:-125px;box-shadow:0 0 0 25px #ffffff0a,0 0 0 50px #ffffff07}.hero-content{position:relative;z-index:1;max-width:690px}.hero-tag{display:inline-flex;align-items:center;gap:8px;border:1px solid #ffffff38;background:#ffffff15;border-radius:30px;padding:7px 11px;font-size:10px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase}.pulse{width:7px;height:7px;border-radius:50%;background:#5df0c2;box-shadow:0 0 0 5px #5df0c226}.hero h1{font:700 clamp(28px,4.5vw,43px) 'Space Grotesk';letter-spacing:-1.7px;margin:15px 0 8px}.hero p{margin:0;color:#d7def4;font-size:14px;line-height:1.7}.hero-date{position:absolute;right:34px;bottom:30px;color:#d4d9f0;font-size:12px;z-index:1}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:19px}.card{background:white;border:1px solid #e9ebf4;border-radius:21px;padding:23px;box-shadow:var(--shadow)}.s8{grid-column:span 8}.s4{grid-column:span 4}.s6{grid-column:span 6}.s12{grid-column:span 12}.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}.card h2{font:700 18px 'Space Grotesk';letter-spacing:-.4px;margin:0}.hint{font-size:12px;color:var(--muted);margin:5px 0 0;line-height:1.5}.tiny-label{font-size:10px;font-weight:800;letter-spacing:1.4px;color:#8490a6;text-transform:uppercase}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 15px}.field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}.field label{font-size:12px;font-weight:700;color:#46536a}.field input,.field select{width:100%;border:1px solid #e0e5ef;border-radius:12px;background:#fbfcff;padding:13px 14px;color:var(--ink);outline:none;transition:.2s}.field input:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 4px #5b6cff16;background:white}.main-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;background:linear-gradient(100deg,#5266f5,#8159e8);color:white;padding:14px 19px;border-radius:13px;box-shadow:0 9px 20px #665cf03a}.main-btn.full{width:100%}.soft-btn{background:#f0f2ff;color:#555fe0;padding:10px 13px;border-radius:11px}.teal-btn{background:linear-gradient(100deg,#12ad9a,#20c7bd);color:white;padding:11px 14px;border-radius:11px}.red-btn{background:#fff0f2;color:#d64b65;padding:9px 12px;border-radius:10px}.note{background:linear-gradient(100deg,#fff7e9,#fff2f6);border:1px solid #ffe8d4;color:#8b5b34;border-radius:13px;padding:12px 14px;font-size:11px;line-height:1.6;margin-top:17px}.feature-stack{display:grid;gap:12px}.feature{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid #edf0f6;border-radius:15px;background:linear-gradient(110deg,#fff,#fafbff)}.feature-icon{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-size:18px;flex-shrink:0}.f1{background:#e9faff}.f2{background:#f0edff}.f3{background:#e8fbf4}.feature strong{font-size:13px;display:block}.feature small{font-size:11px;color:var(--muted);display:block;margin-top:3px}.token-card{position:relative;overflow:hidden;color:white;border-radius:20px;padding:23px;background:linear-gradient(120deg,#152849,#275c9d 65%,#2e9db0)}.token-card:after{content:"";position:absolute;width:180px;height:180px;right:-65px;top:-80px;border:1px solid #ffffff33;border-radius:50%;box-shadow:0 0 0 24px #ffffff0c,0 0 0 49px #ffffff09}.token-card .tiny-label{color:#c2e5f3}.token-id{font:700 48px 'Space Grotesk';letter-spacing:1px;margin:8px 0 2px}.token-sub{font-size:12px;color:#d5e8f6}.token-details{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.metric{border:1px solid #e9edf5;background:#fafbff;border-radius:14px;padding:13px}.metric small{font-size:10px;color:var(--muted);display:block}.metric b{font:700 22px 'Space Grotesk';display:block;margin-top:5px}.metric .mini{font:600 11px 'DM Sans'}.progress-track{height:8px;background:#edf0f6;border-radius:20px;overflow:hidden;margin:10px 0}.progress-track div{height:100%;background:linear-gradient(90deg,var(--cyan),var(--mint));border-radius:20px;transition:width .3s}.list{display:grid;gap:9px}.row-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid #edf0f5;border-radius:14px}.row-left{display:flex;align-items:center;gap:10px;min-width:0}.dept-dot{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#e8f4ff,#f0eaff);color:#5b62d9;display:grid;place-items:center;font-weight:800;font-size:12px;flex-shrink:0}.row-item strong{font-size:12px;display:block}.row-item small{font-size:10px;color:var(--muted);display:block;margin-top:3px}.pill{font-size:10px;font-weight:800;border-radius:30px;padding:6px 9px;white-space:nowrap;background:#e6faf3;color:#13866e}.pill.wait{background:#fff5df;color:#a06b0b}.pill.done{background:#eff1f5;color:#758095}.empty{text-align:center;padding:25px;color:var(--muted);font-size:13px;border:1px dashed #dfe4ef;border-radius:14px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{padding:17px;border-radius:16px;color:white;position:relative;overflow:hidden}.stat:nth-child(1){background:linear-gradient(135deg,#5369f5,#7b65ec)}.stat:nth-child(2){background:linear-gradient(135deg,#13ad9c,#2ac9b4)}.stat:nth-child(3){background:linear-gradient(135deg,#f09a52,#f4bd65)}.stat:nth-child(4){background:linear-gradient(135deg,#e66ca2,#a66de0)}.stat span{font-size:11px;color:#ffffffd9}.stat b{display:block;font:700 30px 'Space Grotesk';margin:8px 0 2px}.stat small{font-size:10px;color:#ffffffc9}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:13px 11px;border-bottom:1px solid #edf0f5;white-space:nowrap}th{font-size:10px;color:#8590a5;text-transform:uppercase;letter-spacing:1px}.actions{display:flex;gap:6px;flex-wrap:wrap}.small-btn{padding:7px 10px;border-radius:9px;font-size:10px}.serve-btn{background:#e8f8f3;color:#12856e}.skip-btn{background:#f1f3f7;color:#667085}.section-gap{margin-top:19px}.toast{position:fixed;z-index:30;bottom:25px;left:50%;transform:translate(-50%,20px);background:#15233e;color:white;padding:13px 19px;border-radius:13px;box-shadow:0 12px 35px #17213c40;font-size:13px;opacity:0;transition:.25s;pointer-events:none;max-width:90%;text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}.footer{text-align:center;color:#98a2b3;font-size:11px;padding:28px 0 0}.hidden{display:none!important}.refresh{background:#f2f4ff;color:#5c65df;padding:9px 12px;border-radius:10px;font-size:11px}
+@media(max-width:800px){.s8,.s4,.s6{grid-column:span 12}.stats{grid-template-columns:1fr 1fr}.hero{padding:27px 24px}.hero-date{display:none}.shell{padding:22px 14px 45px}.card{padding:18px}.topbar{padding:0 15px}.brand{font-size:19px}.top-right label{display:none}}
+@media(max-width:480px){.form-grid{grid-template-columns:1fr}.token-details{grid-template-columns:1fr 1fr}.token-details .metric:last-child{grid-column:span 2}.role-select{max-width:135px}.hero h1{font-size:29px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+ <div class="brand"><div class="brand-mark">⌁</div><div>QueueLess<small>CARE WITHOUT THE WAIT</small></div></div>
+ <div class="top-right"><label>Dashboard</label><select id="roleSelect" class="role-select"><option value="patient">👤 Patient</option><option value="staff">🩺 Hospital staff</option><option value="admin">📊 Admin</option></select></div>
+</header>
+<main class="shell">
+ <section class="hero"><div class="hero-content"><div class="hero-tag"><i class="pulse"></i> CITY CARE HOSPITAL · DEMO</div><h1 id="heroTitle">Skip the wait. Keep your day.</h1><p id="heroText">Take your place in line from wherever you are.<br>We’ll keep you updated while you get on with life.</p></div><div class="hero-date" id="today"></div></section>
+
+ <section id="patientView" class="grid">
+  <div class="card s8">
+   <div class="card-head"><div><div class="tiny-label">QUICK TOKEN BOOKING</div><h2 style="margin-top:7px">Get in line, not in a line.</h2><p class="hint">A few details and your virtual token is ready.</p></div><div style="font-size:26px">🎟️</div></div>
+   <form id="tokenForm" novalidate>
+    <div class="form-grid">
+     <div class="field"><label for="patientName">Your full name</label><input id="patientName" placeholder="e.g. Aanya Patel" required maxlength="50" autocomplete="name"></div>
+     <div class="field"><label for="phone">Mobile number</label><input id="phone" placeholder="10-digit number" inputmode="numeric" maxlength="15" autocomplete="tel"></div>
+     <div class="field"><label for="department">Choose department</label><select id="department"><option>General Medicine</option><option>Dental Care</option><option>Dermatology</option><option>Orthopedics</option><option>Pediatrics</option></select></div>
+     <div class="field"><label for="visitType">Type of visit</label><select id="visitType"><option>Regular consultation</option><option>Follow-up</option></select></div>
+    </div>
+    <button class="main-btn full" type="submit"><span>✦</span> Generate my queue token <span>→</span></button>
+    <div id="formMessage" role="status" aria-live="polite" style="display:none;margin-top:12px;padding:11px 13px;border-radius:11px;font-size:12px;font-weight:700"></div>
+   </form>
+   <div class="note">⚠ Demo project only. Queue estimates are illustrative, not medical advice. For emergencies, contact hospital emergency staff immediately.</div>
+  </div>
+  <div class="card s4"><div class="card-head"><div><div class="tiny-label">THE QUEUELESS WAY</div><h2 style="margin-top:7px">More care. Less waiting.</h2></div></div><div class="feature-stack"><div class="feature"><div class="feature-icon f1">📲</div><div><strong>Book from anywhere</strong><small>Get a digital token in seconds.</small></div></div><div class="feature"><div class="feature-icon f2">⏱️</div><div><strong>Know your wait</strong><small>See your place in the queue.</small></div></div><div class="feature"><div class="feature-icon f3">💚</div><div><strong>Arrive with confidence</strong><small>Spend less time in waiting rooms.</small></div></div></div></div>
+  <div class="card s8"><div class="card-head"><div><div class="tiny-label">YOUR VISIT</div><h2 style="margin-top:7px">Your queue pass</h2><p class="hint">Your latest token and live demo status.</p></div><button class="refresh" id="refreshPatient">↻ Refresh</button></div><div id="myToken"><div class="empty">✨ Your queue pass will appear here after you generate a token.</div></div></div>
+  <div class="card s4"><div class="card-head"><div><div class="tiny-label">LIVE DEPARTMENTS</div><h2 style="margin-top:7px">Now serving</h2></div><span class="pill">● Demo live</span></div><div id="nowServing" class="list"></div></div>
+ </section>
+
+ <section id="staffView" class="grid hidden">
+  <div class="card s12"><div class="card-head"><div><div class="tiny-label">STAFF WORKSPACE</div><h2 style="margin-top:7px">Keep every visit moving.</h2><p class="hint">Manage the active queue. Changes appear in the patient view on this browser.</p></div><button class="refresh" id="staffRefresh">↻ Refresh</button></div><div class="stats" id="staffStats"></div></div>
+  <div class="card s8"><div class="card-head"><div><div class="tiny-label">PATIENT FLOW</div><h2 style="margin-top:7px">Waiting room</h2><p class="hint">Select a department to see its active tokens.</p></div></div><div class="field"><label for="staffDepartment">Department</label><select id="staffDepartment"><option>General Medicine</option><option>Dental Care</option><option>Dermatology</option><option>Orthopedics</option><option>Pediatrics</option></select></div><div id="staffQueue" class="list"></div></div>
+  <div class="card s4"><div class="tiny-label">ONE-TAP CONTROL</div><h2 style="margin:7px 0">Call next patient</h2><p class="hint">Automatically completes the currently serving token and calls the next waiting token.</p><div style="font-size:42px;margin:22px 0">🔔</div><button class="main-btn full" id="nextPatient">Call next patient →</button><div class="note">Priority and emergency decisions must be handled by authorized clinical staff. This prototype does not perform medical triage.</div></div>
+ </section>
+
+ <section id="adminView" class="grid hidden">
+  <div class="card s12"><div class="card-head"><div><div class="tiny-label">HOSPITAL INSIGHTS</div><h2 style="margin-top:7px">A clearer view of patient flow.</h2><p class="hint">Demo analytics for all generated tokens.</p></div><button class="refresh" id="adminRefresh">↻ Refresh</button></div><div class="stats" id="adminStats"></div></div>
+  <div class="card s12"><div class="card-head"><div><div class="tiny-label">QUEUE ACTIVITY</div><h2 style="margin-top:7px">All queue records</h2></div><button class="red-btn" id="resetDemo">Reset demo data</button></div><div class="table-wrap"><table><thead><tr><th>Token</th><th>Patient</th><th>Department</th><th>Visit</th><th>Status</th><th>Time</th></tr></thead><tbody id="adminTable"></tbody></table></div></div>
+ </section>
+ <div class="footer">QueueLess © 2026 · A virtual queue management prototype for academic demonstration</div>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){
+'use strict';
+const KEY='queueless_demo_v2';
+const DEPTS=['General Medicine','Dental Care','Dermatology','Orthopedics','Pediatrics'];
+const PREFIX={'General Medicine':'GM','Dental Care':'DC','Dermatology':'DR','Orthopedics':'OR','Pediatrics':'PD'};
+let records=readRecords(),latestId=null;
+const $=id=>document.getElementById(id);
+function readRecords(){try{const x=JSON.parse(window.localStorage.getItem(KEY)||'[]');return Array.isArray(x)?x:[]}catch(e){return []}}
+function save(){try{window.localStorage.setItem(KEY,JSON.stringify(records));}catch(e){/* Storage can be blocked in previews/private modes. Keep this session working in memory. */}return true}
+function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function notify(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(notify.timer);notify.timer=setTimeout(()=>t.classList.remove('show'),2800)}
+function number(r){return Number(String(r.token).split('-').pop())||0}
+function rows(dept){return records.filter(r=>r.department===dept).sort((a,b)=>number(a)-number(b))}
+function serving(dept){return rows(dept).find(r=>r.status==='Serving')}
+function waitingAhead(r){return rows(r.department).filter(x=>x.status==='Waiting'&&number(x)<number(r)).length}
+function estimate(r){return (waitingAhead(r)+(serving(r.department)?1:0))*5}
+function time(iso){return new Date(iso).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+function pill(status){return `<span class="pill ${status==='Waiting'?'wait':status==='Completed'||status==='Skipped'||status==='Cancelled'?'done':''}">${safe(status)}</span>`}
+function setView(){const role=$('roleSelect').value;['patient','staff','admin'].forEach(x=>$(x+'View').classList.toggle('hidden',x!==role));const h={patient:['Skip the wait. Keep your day.','Take your place in line from wherever you are.<br>We’ll keep you updated while you get on with life.'],staff:['A smoother queue starts here.','Call patients, manage waiting lists and keep the day moving.'],admin:['See the flow. Improve the care.','A simple overview of queue activity across your departments.']}[role];$('heroTitle').textContent=h[0];$('heroText').innerHTML=h[1];render()}
+function render(){const role=$('roleSelect').value;if(role==='patient')renderPatient();if(role==='staff')renderStaff();if(role==='admin')renderAdmin()}
+function renderPatient(){
+ const r=records.find(x=>x.id===latestId)||records.filter(x=>x.status!=='Cancelled').slice(-1)[0];
+ if(!r){$('myToken').innerHTML='<div class="empty">✨ Your queue pass will appear here after you generate a token.</div>'}
+ else{
+  const ahead=waitingAhead(r),wait=estimate(r),finished=['Completed','Skipped','Cancelled'].includes(r.status),pct=finished?100:r.status==='Serving'?88:Math.max(12,Math.min(80,100-ahead*12));
+  $('myToken').innerHTML=`<div class="token-card"><div class="tiny-label">YOUR DIGITAL QUEUE PASS</div><div class="token-id">${safe(r.token)}</div><div class="token-sub">${safe(r.department)} · ${safe(r.patient)}</div></div><div class="token-details"><div class="metric"><small>People ahead</small><b>${r.status==='Serving'?0:ahead}</b></div><div class="metric"><small>Estimated wait</small><b>${finished?'—':wait+'m'}</b></div><div class="metric"><small>Queue status</small><b class="mini">${safe(r.status)}</b></div></div><div class="hint" style="margin-top:17px">Your queue progress</div><div class="progress-track"><div style="width:${pct}%"></div></div><div class="hint">${r.status==='Serving'?'It’s your turn. Please proceed to the desk.':finished?'This token is no longer active.':`There ${ahead===1?'is':'are'} ${ahead} patient${ahead===1?'':'s'} ahead of you.`}</div>${['Waiting','Serving'].includes(r.status)?`<div style="margin-top:13px"><button class="red-btn" id="cancelMine">Cancel my token</button></div>`:''}<div class="note">Estimated wait is a demo calculation of 5 minutes per person ahead. Actual wait times may differ.</div>`;
+  const c=$('cancelMine');if(c)c.addEventListener('click',()=>{if(confirm('Cancel your token?'))change(r.id,'Cancelled')});
+ }
+ $('nowServing').innerHTML=DEPTS.map(d=>{const s=serving(d),n=rows(d).filter(x=>x.status==='Waiting').length;return `<div class="row-item"><div class="row-left"><div class="dept-dot">${PREFIX[d]}</div><div><strong>${safe(d)}</strong><small>${n} waiting</small></div></div>${s?`<span class="pill">${safe(s.token)}</span>`:'<span class="pill done">Idle</span>'}</div>`}).join('');
+}
+function stat(label,value,caption){return `<div class="stat"><span>${label}</span><b>${value}</b><small>${caption}</small></div>`}
+function renderStaff(){
+ const waiting=records.filter(x=>x.status==='Waiting').length,now=records.filter(x=>x.status==='Serving').length,done=records.filter(x=>x.status==='Completed').length,total=records.length;
+ $('staffStats').innerHTML=stat('Waiting',waiting,'In active queues')+stat('Serving',now,'At the consultation desk')+stat('Completed',done,'Visits finished')+stat('All tokens',total,'Generated in this demo');
+ const d=$('staffDepartment').value,active=rows(d).filter(x=>['Waiting','Serving'].includes(x.status));
+ $('staffQueue').innerHTML=active.length?active.map(r=>`<div class="row-item"><div class="row-left"><div class="dept-dot">${safe(r.token.split('-')[1])}</div><div><strong>${safe(r.token)} · ${safe(r.patient)}</strong><small>${safe(r.visit)} · Joined ${time(r.created)}</small></div></div><div class="actions">${pill(r.status)}${r.status==='Waiting'?`<button class="small-btn serve-btn" data-act="serve" data-id="${r.id}">Call</button>`:`<button class="small-btn serve-btn" data-act="complete" data-id="${r.id}">Complete</button>`}<button class="small-btn skip-btn" data-act="skip" data-id="${r.id}">Skip</button></div></div>`).join(''):'<div class="empty">No active patients in this department yet.</div>';
+ $('staffQueue').querySelectorAll('button[data-act]').forEach(b=>b.addEventListener('click',()=>{const {act,id}=b.dataset;if(act==='serve')call(id);if(act==='complete')change(id,'Completed');if(act==='skip')change(id,'Skipped')}));
+}
+function renderAdmin(){
+ const waiting=records.filter(x=>x.status==='Waiting').length,now=records.filter(x=>x.status==='Serving').length,done=records.filter(x=>x.status==='Completed').length;
+ $('adminStats').innerHTML=stat('Total tokens',records.length,'All departments')+stat('Waiting',waiting,'Currently in queue')+stat('Being served',now,'At consultation')+stat('Completed',done,'Successfully finished');
+ $('adminTable').innerHTML=records.length?records.slice().sort((a,b)=>b.created.localeCompare(a.created)).map(r=>`<tr><td><b>${safe(r.token)}</b></td><td>${safe(r.patient)}</td><td>${safe(r.department)}</td><td>${safe(r.visit)}</td><td>${pill(r.status)}</td><td>${time(r.created)}</td></tr>`).join(''):'<tr><td colspan="6" class="empty">No tokens yet. Create a patient token to see records here.</td></tr>';
+}
+$('tokenForm').addEventListener('submit',function(e){
+ e.preventDefault();
+ const name=$('patientName').value.trim(),phone=$('phone').value.replace(/\D/g,''),dept=$('department').value,visit=$('visitType').value;
+ const msg=$('formMessage');const showFormMessage=(text,ok)=>{msg.textContent=text;msg.style.display='block';msg.style.background=ok?'#e8fbf4':'#fff0f2';msg.style.color=ok?'#087c63':'#bd3450';};
+ if(name.length<2){showFormMessage('Please enter your name (at least 2 characters).',false);$('patientName').focus();return}
+ if(phone.length!==10){showFormMessage('Please enter exactly 10 digits for your mobile number.',false);$('phone').focus();return}
+ if(!DEPTS.includes(dept)){showFormMessage('Please choose a valid department.',false);return}
+ const next=rows(dept).reduce((max,r)=>Math.max(max,number(r)),0)+1;
+ const id='q_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7);
+ const rec={id,token:PREFIX[dept]+'-'+String(next).padStart(3,'0'),patient:name,phone,department:dept,visit,status:'Waiting',created:new Date().toISOString()};
+ records.push(rec);latestId=id;save();
+ showFormMessage('✓ Your token '+rec.token+' has been generated successfully!',true);$('tokenForm').reset();$('roleSelect').value='patient';setView();notify('🎉 Token '+rec.token+' generated successfully!');
+});
+function change(id,status){const r=records.find(x=>x.id===id);if(!r)return;r.status=status;save();render();notify(r.token+' marked '+status+'.')}
+function call(id){const r=records.find(x=>x.id===id);if(!r)return;records.filter(x=>x.department===r.department&&x.status==='Serving').forEach(x=>x.status='Completed');r.status='Serving';save();render();notify('Now serving '+r.token+'.')}
+$('nextPatient').addEventListener('click',()=>{const d=$('staffDepartment').value;const old=serving(d);if(old)old.status='Completed';const n=rows(d).find(x=>x.status==='Waiting');if(!n){save();render();notify('No waiting patients in '+d+'.');return}n.status='Serving';save();render();notify('Now serving '+n.token+'.')});
+$('roleSelect').addEventListener('change',setView);$('staffDepartment').addEventListener('change',renderStaff);
+['refreshPatient','staffRefresh','adminRefresh'].forEach(id=>$(id).addEventListener('click',render));
+$('resetDemo').addEventListener('click',()=>{if(confirm('Delete all QueueLess demo records stored in this browser?')){records=[];latestId=null;save();render();notify('Demo data cleared.')}});
+$('today').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric',year:'numeric'});
+setView();
+})();
+</script>
+</body>
+</html>
